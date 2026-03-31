@@ -5,7 +5,6 @@
 # FaultReportingAPI 🛠️
 
 ## 📌 Proje Özeti
----
 
 Bu proje, arıza bildirim süreçlerini yönetmek amacıyla geliştirilmiş, modern .NET tabanlı bir Web API uygulamasıdır. Uygulama,  **Repository** ve **Unit of Work**  mimari desenleri üzerine inşa edilerek veri erişim katmanı soyutlanmış, iş mantığının sürdürülebilir ve test edilebilir olması sağlanmıştır.
 
