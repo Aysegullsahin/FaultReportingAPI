@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="FaultReportingAPI.BLL/FaultReportingAPI.BLL.csproj" />
+  <Project Path="FaultReportingAPI.Core/FaultReportingAPI.Core.csproj" />
+  <Project Path="FaultReportingAPI.DAL/FaultReportingAPI.DAL.csproj" />
+  <Project Path="FaultReportingAPI/FaultReportingAPI.csproj" />
+</Solution>
