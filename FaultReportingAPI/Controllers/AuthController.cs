@@ -1,6 +1,7 @@
 ﻿using FaultReportingAPI.BLL.Services.Abstract;
 using FaultReportingAPI.Core.Dto;
 using FaultReportingAPI.Functions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FaultReportingAPI.Controllers
@@ -23,6 +24,7 @@ namespace FaultReportingAPI.Controllers
         /// <response code="401">Unauthorized access (Token is missing or invalid).</response>
         /// <response code="404">No record found with the specified ID.</response>
         /// <response code="500">Internal server error (An unexpected error occurred on the server).</response>
+        [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(ResponseSingle<UserDto_Token>), 200)]
         [ProducesResponseType(typeof(Response), 400)]
@@ -45,6 +47,7 @@ namespace FaultReportingAPI.Controllers
         [ProducesResponseType(typeof(ResponseSingle<UserDto_Token>), 201)]
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 500)]
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> RegisterAsync([FromBody] UserDto_Request userDto)
         {

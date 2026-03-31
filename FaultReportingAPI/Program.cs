@@ -14,21 +14,12 @@ using Newtonsoft.Json.Converters;
 using Serilog;
 using System.Reflection;
 using System.Text;
-using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
-
-//Log.Logger = new LoggerConfiguration()
-//    .MinimumLevel.Information()
-//    .Enrich.FromLogContext()
-//    .Enrich.WithMachineName()
-//    .WriteTo.Console()
-//    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
-//    .WriteTo.Seq("http://localhost:5341") // Seq URL
-//    .CreateLogger();
 
 #region Serilog
 Log.Logger = new LoggerConfiguration()
@@ -94,7 +85,41 @@ builder.Services.AddControllers()
 
                     });
 
+#region RateLimting
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("ipPolicy", context =>
+    {
+        var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: ip,
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,       
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,          
+                AutoReplenishment = true
+            });
+    });
+
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.ContentType = "application/json";
+
+        await context.HttpContext.Response.WriteAsJsonAsync(new
+        {
+            Message = "You have submitted too many requests. Please try again in a minute.",
+            RetryAfter = "1 minute"
+        }, cancellationToken: token);
+    };
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+#endregion
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+#region Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -113,7 +138,7 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter your JWT token. Example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        Description = "Enter: Bearer {your JWT token}"
     });
 
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -127,10 +152,12 @@ builder.Services.AddSwaggerGen(options =>
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });
+#endregion
+
 
 #region DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -157,9 +184,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseRateLimiter();
+
+
+app.MapControllers().RequireRateLimiting("ipPolicy");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

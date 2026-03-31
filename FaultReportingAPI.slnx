@@ -3,4 +3,5 @@
   <Project Path="FaultReportingAPI.Core/FaultReportingAPI.Core.csproj" />
   <Project Path="FaultReportingAPI.DAL/FaultReportingAPI.DAL.csproj" />
   <Project Path="FaultReportingAPI/FaultReportingAPI.csproj" />
+  <Project Path="FaultReportingTestAPI/FaultReportingTestAPI.csproj" Id="25ae067b-dfac-4570-ace4-983de501f644" />
 </Solution>
