@@ -6,8 +6,6 @@ namespace FaultReportingAPI.DAL.Context
 {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
-        //private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-
         public DbSet<User> Users { get; set; }
         public DbSet<FaultReporting> FaultReporting { get; set; }
 
@@ -16,15 +14,6 @@ namespace FaultReportingAPI.DAL.Context
             modelBuilder.ApplyConfiguration(new UserMap ());
             modelBuilder.ApplyConfiguration(new FaultReportingMap ());
         }
-        //public long? CurrentUserId
-        //{
-        //    get
-        //    {
-        //        var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("userId")?.Value;
-
-        //        return long.TryParse(userIdClaim, out var id) ? id : null;
-        //    }
-        //}
     }
 
     public class DesignTimeDbContextFactory

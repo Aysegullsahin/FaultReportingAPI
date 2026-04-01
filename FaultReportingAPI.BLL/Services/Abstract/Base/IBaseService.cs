@@ -1,6 +1,5 @@
 ﻿using FaultReportingAPI.Core.Dto;
 using FaultReportingAPI.Core.Models.Base;
-using System.Drawing.Printing;
 using System.Linq.Expressions;
 
 namespace FaultReportingAPI.BLL.Services.Abstract.Base

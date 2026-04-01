@@ -9,8 +9,6 @@ using FaultReportingAPI.Core.Models.Base;
 using FaultReportingAPI.DAL.UnitOfWork.Abstract;
 using LinqKit;
 using Microsoft.AspNetCore.Http;
-using System.Drawing.Printing;
-using System.Linq.Expressions;
 using System.Net;
 
 namespace FaultReportingAPI.BLL.Services.Concrete

@@ -38,7 +38,7 @@ namespace FaultReportingAPI.Middleware
             var response = new
             {
                 message = "Internal Server Error",
-                detail = exception.Message // prod'da kaldırabilirsin
+                detail = exception.Message 
             };
 
             return context.Response.WriteAsJsonAsync(response);
